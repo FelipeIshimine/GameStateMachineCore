@@ -1,5 +1,5 @@
 {
-  "name": "com.ishimine.gamestatemachine",
+  "name": "com.ishimine.gamestatemachinecore",
   "displayName": "GameStateMachineCore",
   "description": "Core package for creating the base Game State Architecture using addressable assets",
   "version": "1.0.0",
@@ -20,6 +20,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/FelipeIshimine/Unity-GameStateMachine.git"
+    "url": "https://github.com/FelipeIshimine/GameStateMachineCore.git"
   }
 }
