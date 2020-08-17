@@ -1,0 +1,18 @@
+{
+	"name":"com.ishimine.GameStateMachine",
+	"displayName": "GameStateMachineCore",
+	"version": "1.0.0",
+	"Unity": "2019.1",
+	"author": "Felipe ishimine",
+	"description": "Core package for creating the base Game State Architecture using addressable assets",
+	"dependencies":{  		 
+	"com.unity.addressables": "1.8.4"
+	},
+	"keywords":
+	["same","state", "machine","ishimine","Ishimine"],
+	"repository":
+	{
+		"type": "git",
+		"url": "https://github.com/FelipeIshimine/Unity-GameStateMachine.git"
+	}
+}
