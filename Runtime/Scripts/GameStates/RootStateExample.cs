@@ -2,36 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 //using ScreenTransitionSystem;
-
-public class RootStateExample : GameStateWithAddressableAssets
+namespace GameStateMachineCore
 {
-    public static bool PrintDebug = true;
-
-    private static RootStateExample instance;
-    public static RootStateExample Instance
+    public class RootStateExample : GameStateWithAddressableAssets
     {
-        get 
+        public static bool PrintDebug = true;
+
+        private static RootStateExample instance;
+        public static RootStateExample Instance
         {
-            if (instance == null)
-                instance = new RootStateExample();
-            return instance; 
+            get
+            {
+                if (instance == null)
+                    instance = new RootStateExample();
+                return instance;
+            }
         }
-    }
 
-    public static void Initialize()
-    {
-        if (PrintDebug) Debug.Log($"<Color=green> RootState->Initialize() </color>");
-        Instance.SwitchState(Instance);
-        //OnInstantiationProgress += ScreenTransitionSystem.ScreenTransition.SetProgress;
-    }
+        public static void Initialize()
+        {
+            if (PrintDebug) Debug.Log($"<Color=green> RootState->Initialize() </color>");
+            Instance.SwitchState(Instance);
+            //OnInstantiationProgress += ScreenTransitionSystem.ScreenTransition.SetProgress;
+        }
 
-    public override void OnEnter()
-    {
-        if (PrintDebug) Debug.Log("<Color=green> GameManager State ENTER </color>");
-    }
+        public override void OnEnter()
+        {
+            if (PrintDebug) Debug.Log("<Color=green> GameManager State ENTER </color>");
+        }
 
-    public override void OnExit()
-    {
-        //OnInstantiationProgress -= ScreenTransitionSystem.ScreenTransition.SetProgress;
+        public override void OnExit()
+        {
+            //OnInstantiationProgress -= ScreenTransitionSystem.ScreenTransition.SetProgress;
+        }
     }
 }

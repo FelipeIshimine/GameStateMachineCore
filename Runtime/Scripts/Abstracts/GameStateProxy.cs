@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
-
-public class GameStateProxy : MonoBehaviour
+namespace GameStateMachineCore
 {
-    public GameState GameState { get; private set; }
-
-    public void Initialize<T>(T nGameState) where T : GameState
+    public class GameStateProxy : MonoBehaviour
     {
-        GameState = nGameState;
+        public GameState GameState { get; private set; }
+
+        public void Initialize<T>(T nGameState) where T : GameState
+        {
+            GameState = nGameState;
+        }
     }
 }

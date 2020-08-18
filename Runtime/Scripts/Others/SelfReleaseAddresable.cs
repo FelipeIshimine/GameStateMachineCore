@@ -4,18 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
-
-public class SelfReleaseAddresable : MonoBehaviour
+namespace GameStateMachineCore
 {
-    public GameStateWithAddressableAssets owner;
-
-    public void ReleaseFromGameStateOwner()
+    public class SelfReleaseAddresable : MonoBehaviour
     {
-        owner.Release(this);
-    }
+        public GameStateWithAddressableAssets owner;
 
-    internal void Initialize(GameStateWithAddressableAssets gameStateWithAddressableAssets)
-    {
-        owner = gameStateWithAddressableAssets;
+        public void ReleaseFromGameStateOwner()
+        {
+            owner.Release(this);
+        }
+
+        internal void Initialize(GameStateWithAddressableAssets gameStateWithAddressableAssets)
+        {
+            owner = gameStateWithAddressableAssets;
+        }
     }
 }
