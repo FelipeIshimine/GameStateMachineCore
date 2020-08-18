@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 //using ScreenTransitionSystem;
 
-public class RootState : GameStateWithAddressableAssets
+public class RootStateExample : GameStateWithAddressableAssets
 {
     public static bool PrintDebug = true;
 
-    private static RootState instance;
-    public static RootState Instance
+    private static RootStateExample instance;
+    public static RootStateExample Instance
     {
         get 
         {
             if (instance == null)
-                instance = new RootState();
+                instance = new RootStateExample();
             return instance; 
         }
     }
 
-    [RuntimeInitializeOnLoadMethod]
     public static void Initialize()
     {
         if (PrintDebug) Debug.Log($"<Color=green> RootState->Initialize() </color>");
