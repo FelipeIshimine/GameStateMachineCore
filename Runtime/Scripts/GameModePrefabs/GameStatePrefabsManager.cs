@@ -51,7 +51,7 @@ public class GameStatePrefabsManager : ScriptableObject
     }
 
 #if UNITY_EDITOR
-    [MenuItem("GameStateMachine/UpdateGameStates")]
+    [MenuItem("GameStateMachine/UpdateGameStates", priority = 0)]
     public static void UpdateGameStates()
     {
         Instance.GetAllSubclasses();
@@ -134,7 +134,7 @@ public class GameStatePrefabsManager : ScriptableObject
     }
 
 #if UNITY_EDITOR
-    [MenuItem("GameStateMachine/Manager")]
+    [MenuItem("GameStateMachine/Manager", priority = 0)]
     public static void SelectMe()
     {
         Selection.SetActiveObjectWithContext(Instance, Instance);
