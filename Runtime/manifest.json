@@ -1,7 +1,7 @@
 {
 	"name":"com.ishimine.GameStateMachine",
 	"displayName": "GameStateMachineCore",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"Unity": "2019.1",
 	"author": "Felipe ishimine",
 	"description": "Core package for creating the base Game State Architecture using addressable assets",
