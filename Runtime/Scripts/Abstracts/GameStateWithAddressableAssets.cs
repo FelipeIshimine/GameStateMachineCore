@@ -256,11 +256,25 @@ namespace GameStateMachineCore
             OnEnter();
         }
 
-        protected T FindLocalPrefab<T>() where T : MonoBehaviour
+        protected T FindComponentIntLocalPrefab<T>(SearchType searchType = SearchType.Simple) where T : Component
         {
             Debug.Log($"{this} => FindLocalPrefab => {typeof(T).ToString()}");
 
-            GameObject go = gameObjects.Find(x => x.gameObject.GetComponent<T>() != null);
+            GameObject go;
+            switch (searchType)
+            {
+                case SearchType.Simple:
+                default:
+                    go = gameObjects.Find(x => x.gameObject.GetComponent<T>() != null);
+                    break;
+                case SearchType.Parent:
+                    go = gameObjects.Find(x => x.gameObject.GetComponentInParent<T>() != null);
+                    break;
+                case SearchType.Children:
+                    go = gameObjects.Find(x => x.gameObject.GetComponentInChildren<T>() != null);
+                    break;
+            }
+
             if (go == null)
             {
                 Debug.LogError($"No se encontro ningun prefab con el componente {typeof(T).ToString()} en {this}");
@@ -269,9 +283,10 @@ namespace GameStateMachineCore
             else return go.gameObject.GetComponent<T>();
         }
 
-        protected void AssignPrefabTo<T>(out T targetObject) where T : MonoBehaviour
+        protected enum SearchType { Simple, Parent, Children }
+        protected void AssignPrefabTo<T>(out T targetObject, SearchType searchType = SearchType.Simple) where T : Component
         {
-            targetObject = FindLocalPrefab<T>();
+            targetObject = FindComponentIntLocalPrefab<T>(searchType);
         }
 
         protected T FindLocalScriptableObject<T>() where T : ScriptableObject
