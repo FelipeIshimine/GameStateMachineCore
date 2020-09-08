@@ -22,7 +22,8 @@ namespace GameStateMachineCore
 
         int soTotalSteps;
         int soCurrentSteps;
-        GameObject _root;
+        protected GameObject _root;
+        protected GameStateProxy proxy;
         public static Action<float> OnInstantiationProgress;
 
         public GameStateWithAddressableAssets()
@@ -87,7 +88,8 @@ namespace GameStateMachineCore
         protected void InstantiatePrefabs()
         {
             _root = new GameObject();
-            _root.AddComponent<GameStateProxy>().Initialize(this);
+            proxy = _root.AddComponent<GameStateProxy>();
+            proxy.Initialize(this);
             _root.name = this.ToString();
 
             List<AssetReference> assetReferences = new List<AssetReference>(prefabReferences.GetGameObjectReferences());
@@ -122,9 +124,8 @@ namespace GameStateMachineCore
         private void AsyncInstantiationComplete(AsyncOperationHandle<GameObject> obj)
         {
 
-#if UNITY_EDITOR
             Debug.Log($"<color=green> AsyncInstantiationComplete </color> {obj.Result.name}");
-#endif
+
             currentInstantiateStep++;
             Debug.Log($"OnInstantiationUpdate <color=white> { ((float)currentInstantiateStep / initializationSteps) * 100 }% </color>");
             OnInstantiationProgress?.Invoke((float)currentInstantiateStep / initializationSteps);
