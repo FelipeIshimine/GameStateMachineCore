@@ -139,8 +139,6 @@ namespace GameStateMachineCore
 
         private void InstantiationDone()
         {
-
-
             Debug.Log("<color=green> InstantiationDone </color>");
             OnInstantiationProgress?.Invoke(1);
             LoadScriptableObjects();

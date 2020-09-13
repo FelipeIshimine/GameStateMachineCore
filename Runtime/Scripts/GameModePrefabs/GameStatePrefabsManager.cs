@@ -69,11 +69,7 @@ namespace GameStateMachineCore
 #if UNITY_EDITOR
         public void GetAllSubclasses()
         {
-            IEnumerable<System.Type> subclassTypes = from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                                                     from type in assembly.GetTypes()
-                                                     where (type.IsSubclassOf(typeof(GameStateWithAddressableAssets)) && !type.IsAbstract)
-                                                     select type;
-
+            IEnumerable<Type> subclassTypes = GetAllSubclassTypes<GameStateWithAddressableAssets>();
             RemoveEmpty();
 
             //Search Or Create   
@@ -112,9 +108,15 @@ namespace GameStateMachineCore
                 }
                 EditorUtility.SetDirty(gameStatePrefabReferences);
             }
-
-
             AssetDatabase.SaveAssets();
+        }
+            
+        private static IEnumerable<Type> GetAllSubclassTypes<T>()
+        {
+            return from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                   from type in assembly.GetTypes()
+                   where (type.IsSubclassOf(typeof(T)) && !type.IsAbstract)
+                   select type;
         }
 
         private void RemoveEmpty()
