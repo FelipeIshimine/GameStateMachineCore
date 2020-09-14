@@ -10,7 +10,7 @@ public class GameStatePrefabsWindow : EditorWindow
     private Object _selection;
     private string _filterValue = string.Empty;
 
-    [MenuItem("Window/Ishimine/GameStatePrefabs")]
+    [MenuItem("Window/Ishimine/GameStatePrefabs", priority = 1)]
     public static void ShowExample()
     {
         GameStatePrefabsWindow wnd = GetWindow<GameStatePrefabsWindow>();
