@@ -14,14 +14,14 @@ namespace GameStateMachineCore
 
         private const string InstancePath = "GameStatePrefabs/_GameStatePrefabsManager";
 
-        private static GameStatePrefabsManager instance;
+        private static GameStatePrefabsManager _instance;
         public static GameStatePrefabsManager Instance
         {
             get
             {
-                if (instance == null)
+                if (_instance == null)
                     InitializeInstance();
-                return instance;
+                return _instance;
             }
         }
 
@@ -43,10 +43,10 @@ namespace GameStateMachineCore
                 Directory.CreateDirectory(folderPath);
             }
 #endif
-            instance = Resources.Load<GameStatePrefabsManager>(InstancePath);
+            _instance = Resources.Load<GameStatePrefabsManager>(InstancePath);
 #if UNITY_EDITOR
-            if (instance == null)
-                instance = MakeScriptableObject.CreateAsset<GameStatePrefabsManager>("Assets/Resources/GameStatePrefabs/_GameStatePrefabsManager.asset");
+            if (_instance == null)
+                _instance = MakeScriptableObject.CreateAsset<GameStatePrefabsManager>("Assets/Resources/GameStatePrefabs/_GameStatePrefabsManager.asset");
             Instance.GetAllSubclasses();
 #endif
         }
