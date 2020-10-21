@@ -255,7 +255,7 @@ namespace GameStateMachineCore
             OnEnter();
         }
 
-        protected T FindComponentIntLocalPrefab<T>(SearchType searchType = SearchType.Simple) where T : Component
+        protected T FindComponentInLocalPrefab<T>(SearchType searchType = SearchType.Simple) where T : Component
         {
             Debug.Log($"{this} => FindLocalPrefab => {typeof(T).ToString()}");
 
@@ -285,7 +285,18 @@ namespace GameStateMachineCore
         protected enum SearchType { Simple, Parent, Children }
         protected void AssignPrefabTo<T>(out T targetObject, SearchType searchType = SearchType.Simple) where T : Component
         {
-            targetObject = FindComponentIntLocalPrefab<T>(searchType);
+            targetObject = FindComponentInLocalPrefab<T>(searchType);
+        }
+
+        protected List<T> FindComponentsInLocalPrefabs<T>()
+        {
+            List<T> list = new List<T>();
+            foreach (GameObject gameObject in gameObjects)
+            {
+                T value = gameObject.GetComponent<T>();
+                if(value != null) list.Add(value);
+            }
+            return list;
         }
 
         protected T FindLocalScriptableObject<T>() where T : ScriptableObject
