@@ -27,7 +27,8 @@ namespace GameStateMachineCore
         protected GameObject _root;
         protected GameStateProxy proxy;
         public static Action<float> OnInstantiationProgress;
-
+        private List<AssetReference> activeAssetReferences;
+        
         public GameStateWithAddressableAssets()
         {
             prefabReferences = GameStatePrefabsManager.GetPrefabReferences(this);
@@ -61,7 +62,10 @@ namespace GameStateMachineCore
         private void DestroyAndReleasePrefabs()
         {
             for (int i = gameObjects.Count - 1; i >= 0; i--)
-                Addressables.ReleaseInstance(gameObjects[i]);
+                Object.Destroy(gameObjects[i]);
+
+            foreach (AssetReference activeAssetReference in activeAssetReferences)
+                activeAssetReference.ReleaseAsset();
 
             for (int i = 0; i < scriptableObjects.Count; i++)
                 Addressables.Release(scriptableObjects[i]);
@@ -94,24 +98,24 @@ namespace GameStateMachineCore
             proxy.Initialize(this);
             _root.name = this.ToString();
 
-            List<AssetReference> assetReferences = new List<AssetReference>(prefabReferences.GetGameObjectReferences());
-            Debug.Log($"<color=green> Instantiating {assetReferences.Count} from {this.GetType().Name} </color>");
-            assetReferences.AddRange(ExtraAssets);
+            activeAssetReferences = new List<AssetReference>(prefabReferences.GetGameObjectReferences());
+            Debug.Log($"<color=green> Instantiating {activeAssetReferences.Count} from {this.GetType().Name} </color>");
+            activeAssetReferences.AddRange(ExtraAssets);
             Debug.Log($"Instantiating {ExtraAssets.Count} InheritedAssets from {this.GetType().Name}");
 
             for (int i = 0; i < ExtraAssets.Count; i++)
                 Debug.Log($"{ExtraAssets[i]}");
 
-            initializationSteps = assetReferences.Count + 1;
+            initializationSteps = activeAssetReferences.Count + 1;
 
-            if (assetReferences.Count == 0)
+            if (activeAssetReferences.Count == 0)
                 InstantiationDone();
 
-            Debug.Log($"assetReferences.Count:{assetReferences.Count}");
+            Debug.Log($"assetReferences.Count:{activeAssetReferences.Count}");
 
-            for (int i = 0; i < assetReferences.Count; i++)
+            for (int i = 0; i < activeAssetReferences.Count; i++)
             {
-                AssetReference itemReference = assetReferences[i];
+                AssetReference itemReference = activeAssetReferences[i];
 #if UNITY_EDITOR
                 Debug.Log($"<color=blue> InstantiateAsync Started:</color> {itemReference.editorAsset.name}");
 #endif
@@ -135,7 +139,7 @@ namespace GameStateMachineCore
 
         private void AsyncInstantiationComplete(AsyncOperationHandle<GameObject> prefab)
         {
-            GameObject obj = Object.Instantiate(prefab.Result,null);
+            GameObject obj = Object.Instantiate(prefab.Result,proxy.transform);
             
             Debug.Log($"<color=green> AsyncInstantiationComplete </color> {obj.name}");
             currentInstantiateStep++;
@@ -210,7 +214,6 @@ namespace GameStateMachineCore
                 InitializationDone();
         }
 
-
         private void OnLoadResourceLocationsDone(AsyncOperationHandle<IList<IResourceLocation>> obj)
         {
             Debug.Log("OnLoadResourceLocationsDone");
@@ -251,8 +254,6 @@ namespace GameStateMachineCore
                     useGameState.GamePlayState = null;
             }
         }
-
-
 
 
         private void LoadAssetsAsyncComplete(AsyncOperationHandle<IList<ScriptableObject>> obj)
