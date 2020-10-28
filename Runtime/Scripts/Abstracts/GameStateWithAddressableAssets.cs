@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
+using Object = UnityEngine.Object;
+
 namespace GameStateMachineCore
 {
     public abstract class GameStateWithAddressableAssets : GameState
@@ -100,7 +102,7 @@ namespace GameStateMachineCore
             for (int i = 0; i < ExtraAssets.Count; i++)
                 Debug.Log($"{ExtraAssets[i]}");
 
-            initializationSteps = assetReferences.Count * 2;
+            initializationSteps = assetReferences.Count + 1;
 
             if (assetReferences.Count == 0)
                 InstantiationDone();
@@ -110,28 +112,38 @@ namespace GameStateMachineCore
             for (int i = 0; i < assetReferences.Count; i++)
             {
                 AssetReference itemReference = assetReferences[i];
-                //CreateObjectAsync(itemReference);
-                Debug.Log($"OnInstantiationUpdate {(float)currentInstantiateStep / initializationSteps}");
-                currentInstantiateStep++;
-                OnInstantiationProgress?.Invoke((float)currentInstantiateStep / initializationSteps);
 #if UNITY_EDITOR
                 Debug.Log($"<color=blue> InstantiateAsync Started:</color> {itemReference.editorAsset.name}");
 #endif
-                Addressables.InstantiateAsync(itemReference, _root.transform).Completed += AsyncInstantiationComplete;
+                itemReference.LoadAssetAsync<GameObject>().Completed += AsyncInstantiationComplete;
             }
-        }
-
-        private void AsyncInstantiationComplete(AsyncOperationHandle<GameObject> obj)
-        {
-
-            Debug.Log($"<color=green> AsyncInstantiationComplete </color> {obj.Result.name}");
 
             currentInstantiateStep++;
-            Debug.Log($"OnInstantiationUpdate <color=white> { ((float)currentInstantiateStep / initializationSteps) * 100 }% </color>");
             OnInstantiationProgress?.Invoke((float)currentInstantiateStep / initializationSteps);
 
-            gameObjects.Add(obj.Result);
-            obj.Result.AddComponent<SelfReleaseAddresable>().Initialize(this);
+            PrintProgress();
+        }
+
+        private void PrintProgress()
+        {
+            string progress = string.Empty;
+            float current = ((float) currentInstantiateStep / initializationSteps * 100);
+            for (int i = 0; i < 100; i+=2)
+                progress += (i <= current) ? '█' : '░';
+            Debug.Log($"OnInstantiationUpdate {progress} {current:0.0} ");
+        }
+
+        private void AsyncInstantiationComplete(AsyncOperationHandle<GameObject> prefab)
+        {
+            GameObject obj = Object.Instantiate(prefab.Result,null);
+            
+            Debug.Log($"<color=green> AsyncInstantiationComplete </color> {obj.name}");
+            currentInstantiateStep++;
+             PrintProgress();
+            OnInstantiationProgress?.Invoke((float)currentInstantiateStep / initializationSteps);
+
+            gameObjects.Add(obj);
+            obj.AddComponent<SelfReleaseAddresable>().Initialize(this);
 
             if (currentInstantiateStep == initializationSteps)
                 InstantiationDone();
